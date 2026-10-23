@@ -1,0 +1,14 @@
+# macOS 관련 임시 파일
+.DS_Store
+
+# CMake 빌드 폴더 (Mac 환경 결과물 무시)
+build/
+
+# Windows / Visual Studio 관련 (Windows에서 작업할 때를 대비)
+.vs/
+Debug/
+Release/
+x64/
+*.exe
+*.obj
+*.pdb
