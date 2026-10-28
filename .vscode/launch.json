@@ -2,17 +2,16 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "CProcessing 실행 및 디버그",
+            "name": "OneHole 실행",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/bin/MyGame", 
+            "program": "${workspaceFolder}/build/bin/OneHole", 
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build/bin",
             "environment": [],
             "externalConsole": false,
-            "MIMode": "lldb",
-            "preLaunchTask": "CMake Build"
+            "MIMode": "lldb"
         }
     ]
 }

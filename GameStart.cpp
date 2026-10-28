@@ -1,0 +1,20 @@
+#include "cprocessing.h"
+#include "GameStart.h"
+
+float window_width_size = 1280.f;
+float window_height_size = 720.f;
+
+void gamestart_init()
+{
+	CP_Graphics_ClearBackground(CP_Color_Create(0,0,0,255));
+	CP_System_SetWindowSize((int)window_width_size, (int)window_height_size);
+	CP_System_SetWindowTitle("OneHole");
+}
+void gamestart_update()
+{
+	
+}
+void gamestart_exit()
+{
+
+}

@@ -13,6 +13,7 @@
 //---------------------------------------------------------
 
 #include "cprocessing.h"
+#include "GameStart.h"
 
 // use CP_Engine_SetNextGameState to specify this function as the initialization function
 // this function will be called once at the beginning of the program
@@ -26,7 +27,7 @@ void game_init(void)
 void game_update(void)
 {
 	// check input, update simulation, render etc.
-	CP_Graphics_ClearBackground(CP_Color_Create(50, 255, 50, 255));
+	
 }
 
 // use CP_Engine_SetNextGameState to specify this function as the exit function
@@ -45,7 +46,7 @@ int main(void)
 	// (on Linux and macOS, run the game from a terminal to see it)
 	// CP_System_ShowConsole(TRUE);
 
-	CP_Engine_SetNextGameState(game_init, game_update, game_exit);
+	CP_Engine_SetNextGameState(gamestart_init, gamestart_update, gamestart_exit);
 	CP_Engine_Run();
 	return 0;
 }

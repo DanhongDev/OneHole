@@ -20,21 +20,24 @@
 
 cmake_minimum_required(VERSION 3.20)
 
-# The game's name, which is also the name of the program file
-project(MyGame C CXX)
+# 프로젝트 이름 설정 (이 이름이 실행 파일 이름이 됩니다)
+project(OneHole C CXX)
 
-add_executable(${PROJECT_NAME} main.cpp)
+# 현재 폴더의 모든 .cpp 파일을 자동으로 찾아서 실행 파일로 만듦
+file(GLOB SOURCES CONFIGURE_DEPENDS "*.cpp")
+add_executable(${PROJECT_NAME} ${SOURCES})
 
-set(CPROCESSING_DIR "${CMAKE_CURRENT_SOURCE_DIR}/CProcessing")
+# CProcessing 엔진 라이브러리 경로 설정 (현재 폴더 자체가 엔진)
+set(CPROCESSING_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 if(EXISTS "${CPROCESSING_DIR}/inc/cprocessing.h")
-    # Prebuilt CProcessing from a release package
+    # 미리 빌드된 라이브러리 사용
     add_library(CProcessing SHARED IMPORTED)
     set_target_properties(CProcessing PROPERTIES
         IMPORTED_LOCATION "${CPROCESSING_DIR}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}CProcessing${CMAKE_SHARED_LIBRARY_SUFFIX}"
         INTERFACE_INCLUDE_DIRECTORIES "${CPROCESSING_DIR}/inc")
 else()
-    # Download CProcessing's source for this release and build it
-    enable_language(CXX)    # CProcessing's audio library, SoLoud, is C++
+    # 인터넷에서 다운로드 (이 부분은 보통 타지 않습니다)
+    enable_language(CXX)
     if(POLICY CMP0135)
         cmake_policy(SET CMP0135 NEW)
     endif()
@@ -44,30 +47,21 @@ else()
     FetchContent_MakeAvailable(cprocessing)
 endif()
 
+# 프로젝트와 엔진 라이브러리 연결
 target_link_libraries(${PROJECT_NAME} PRIVATE CProcessing)
 
-# Put the game in build/bin. ($<0:> stops multi-configuration generators,
-# such as Visual Studio's, from adding a Debug or Release subfolder.)
+# 실행 파일과 에셋을 build/bin 폴더에 배치
 set(GAME_DIR "${CMAKE_BINARY_DIR}/bin")
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${GAME_DIR}$<0:>"
     VS_DEBUGGER_WORKING_DIRECTORY "${GAME_DIR}")
 
-if(WIN32)
-    # A window without a console, like the Visual Studio template
-    # (CP_System_ShowConsole opens one when it's wanted)
-    set_target_properties(${PROJECT_NAME} PROPERTIES WIN32_EXECUTABLE TRUE)
-    if(MSVC)
-        target_link_options(${PROJECT_NAME} PRIVATE /ENTRY:mainCRTStartup)
-    endif()
-elseif(APPLE)
+# Mac 환경 설정
+if(APPLE)
     set_target_properties(${PROJECT_NAME} PROPERTIES BUILD_RPATH "@loader_path")
-else()
-    set_target_properties(${PROJECT_NAME} PROPERTIES BUILD_RPATH "$ORIGIN")
-    target_link_libraries(${PROJECT_NAME} PRIVATE m)
 endif()
 
-# Copy the CProcessing library and the Assets folder next to the game
+# 빌드 후 라이브러리와 에셋 폴더 복사
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_FILE:CProcessing>" "${GAME_DIR}"
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Assets" "${GAME_DIR}/Assets"
