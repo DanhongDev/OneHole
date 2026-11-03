@@ -1,7 +1,7 @@
 #pragma once
 
-void Stage_init();
-void Stage_update();
-void Stage_exit();
+void stage_init();
+void stage_update();
+void stage_exit();
 
 void Draw_tiles();
