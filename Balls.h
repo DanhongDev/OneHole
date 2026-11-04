@@ -1,17 +1,16 @@
 #pragma once
 #include "cprocessing.h"
+#include "GameObject.h"
 
-void balls_init();
-void balls_update();
-void balls_exit();
-
-class Ball
+class Ball : public GameObject
 {
     private:
-    float coordX, coordY;
-    CP_Vector velocity;
+    CP_Vector direction;
+
+    static constexpr float speed = 150.f;
 
     public:
-    Ball(float coordX, float coordY, CP_Vector velocity);
-    const CP_Vector GetCoord() {return {coordX, coordY};};
+    Ball(float x, float y, CP_Vector d);
+    void move() override;
+    void draw() override;
 };

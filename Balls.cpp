@@ -1,24 +1,17 @@
 #include "Balls.h"
 
-#include <vector>
-using namespace std;
-
-namespace
-{
-    vector<Ball> ball;
-}
-void balls_init()
-{
-    ball.push_back(Ball(900.f, 680.f, {0.f, -1.f}));
-}
-void balls_update()
-{
-    
-}
-void balss_exit()
-{
-
-}
-
 // Constructor
-Ball::Ball(float X, float Y, CP_Vector v) : coordX(X), coordY(Y), velocity(v) {}
+Ball::Ball(float x, float y, CP_Vector d) : GameObject(x, y), direction(CP_Vector_Normalize(d)) {}
+
+void Ball::move()
+{
+    float dt = CP_System_GetDt();
+    coordX += direction.x * speed * dt;
+    coordY += direction.y * speed * dt;
+}
+
+void Ball::draw()
+{
+    CP_Settings_Fill(CP_Color_Create(255, 0, 0, 255));
+    CP_Graphics_DrawCircle(coordX, coordY, 10.f);
+}

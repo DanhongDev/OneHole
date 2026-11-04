@@ -1,17 +1,14 @@
 #pragma once
+#include "GameObject.h"
 
-void player_init();
-void player_update();
-void player_exit();
-
-class Player
+class Player : public GameObject
 {
     private:
-    float coordX, coordY;
-    int bar_sizeX, bar_sizeY;
+        int width;
+        int height;
 
     public:
-    Player(float coordX, float coordY, int bar_sizeX, int bar_sizeY);
-    void move();
-    void draw();
+        Player(float x, float y, int w, int h);
+        void move() override;
+        void draw() override;
 };
