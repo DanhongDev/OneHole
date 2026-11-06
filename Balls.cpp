@@ -1,6 +1,5 @@
 #include "Balls.h"
 
-// Constructor
 Ball::Ball(float x, float y, CP_Vector d) : GameObject(x, y), direction(CP_Vector_Normalize(d)) {}
 
 void Ball::move()

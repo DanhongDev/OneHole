@@ -18,10 +18,11 @@ void stage_update()
 	CP_Graphics_ClearBackground(CP_Color_Create(0,0,0,255));
     block_update();
     GOManager::GetInstance().Update();
+    // Collision 만들기
 }
 
 void stage_exit()
 {
     block_exit();
-    GOManager::GetInstance().Clear();
+    GOManager::GetInstance().Exit();
 }

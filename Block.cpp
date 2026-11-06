@@ -1,9 +1,8 @@
-#include <vector>
-
-using namespace std;
-
-#include "cprocessing.h"
 #include "Block.h"
+#include "cprocessing.h"
+
+#include <vector>
+using namespace std;
 
 namespace // 익명namespace: 이 파일 안에서만 쓸 변수와 함수를 묶어 두는 용도
 {

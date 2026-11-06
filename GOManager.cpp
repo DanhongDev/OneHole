@@ -3,13 +3,13 @@
 
 GOManager::~GOManager()
 {
-    Clear();
+    Exit();
 }
 
 GOManager &GOManager::GetInstance()
 {
-    static GOManager ptr;
-    return ptr;
+    static GOManager instance;
+    return instance;
 }
 
 void GOManager::Add(GameObject *obj)
@@ -29,7 +29,7 @@ void GOManager::Update()
     }
 }
 
-void GOManager::Clear()
+void GOManager::Exit()
 {
     for(GameObject *o : objects) delete o;
     objects.clear();
