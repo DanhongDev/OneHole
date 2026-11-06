@@ -1,5 +1,4 @@
 #include "Player.h"
-#include "cprocessing.h"
 #include "WinodwConfig.h"
 
 Player::Player(float x, float y, int w, int h) : GameObject(x, y), width(w), height(h) {}

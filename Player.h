@@ -4,11 +4,12 @@
 class Player : public GameObject
 {
     private:
-        int width;
-        int height;
+        float width;
+        float height;
 
     public:
         Player(float x, float y, int w, int h);
         void move() override;
         void draw() override;
+        CP_Vector GetSize() const {return {width, height};};
 };

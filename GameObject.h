@@ -1,4 +1,5 @@
 #pragma once
+#include "cprocessing.h"
 
 class GameObject
 {
@@ -13,4 +14,6 @@ class GameObject
 
         virtual void move() = 0;
         virtual void draw() = 0;
+
+        CP_Vector GetLocation() const {return {coordX, coordY};};
 };
