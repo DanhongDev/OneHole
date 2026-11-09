@@ -22,14 +22,15 @@ class GOManager
         GOManager& operator=(const GOManager&) = delete;
 
     public:
-        static GOManager& GetInstance();
+        static GOManager &GetInstance();
 
-        const std::vector<Ball*>&GetBalls() const {return balls;};
+        const std::vector<Ball*> &GetBalls() const {return balls;};
         const std::vector<GameObject*> &GetTargets() const {return targets;};
         
         void Add(GameObject* obj);
         void Update();
-        void Draw(); // 원래 Update()에 포함되었었지만 Collision 계산 후 그려내기 위해 draw부분만 분기
-        void Remove(GameObject* obj); // Collision이 일어난 경우 balls, targets에서 obj를 가리키는 포인터 제거
+        void Draw();
+        void RemoveDeadObjects();
+        void Remove(GameObject* obj);
         void Exit();
 };

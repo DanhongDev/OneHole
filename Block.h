@@ -1,20 +1,13 @@
 #pragma once
+#include "GameObject.h"
 
-void block_init();
-void block_update();
-void block_exit();
-
-void DrawBlock();
-
-class Block
+class Block : public GameObject
 {
     private:
-    int x;
-    int y;
     bool isWall;
-    bool isAlive;
 
     public:
-    Block(int x, int y, bool isWall);
-    void draw() const;
+    Block(float x, float y, bool isWall);
+    void draw() override;
+    bool GetisWall() const {return isWall;};
 };

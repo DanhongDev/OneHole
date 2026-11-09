@@ -1,6 +1,7 @@
 #include "GOManager.h"
 #include "GameObject.h"
 #include "Balls.h"
+#include "Block.h"
 
 #include <algorithm>
 
@@ -17,7 +18,7 @@ GOManager &GOManager::GetInstance()
 
 void GOManager::Add(GameObject *obj)
 {
-    // RTTI의 dynamic_cast를 사용할 수 있어. GameObject에는 가상 함수가 있으므로 변환이 가능해. --> 에 대해 질문해보기
+    // RTTI의 dynamic_cast를 사용할 수 있다. GameObject에는 가상 함수가 있으므로 변환이 가능해. --> 에 대해 질문해보기
     if(obj == nullptr) return;
     
     objects.push_back(obj);
@@ -45,6 +46,18 @@ void GOManager::Draw()
     for(GameObject *o : objects)
     {
         o->draw();
+    }
+}
+
+void GOManager::RemoveDeadObjects()
+{
+    for(std::size_t i = objects.size(); i>0; i--)
+    {
+        GameObject* obj = objects[i-1];
+        if(!obj->GetAliveState())
+        {
+            Remove(obj);
+        }
     }
 }
 
