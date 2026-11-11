@@ -45,9 +45,10 @@ void stage_init()
     // Stage 1. 세팅
     Stage_01();
 
+    // 플레이어와 공 1개 세팅
     GOManager &manager = GOManager::GetInstance();
     manager.Add(new Player(1000.f, 680.f, 100.f, 10));
-    manager.Add(new Ball(640.f, 500.f, {0.f, 1.f}));
+    manager.Add(new Ball(640.f, 500.f, {0.f, 1.f})); // 게임 시작 시 공 1개 생성
 }
 
 void stage_update()

@@ -15,6 +15,7 @@ class GameObject
 
         virtual void move() {}
         virtual void draw() = 0;
+        virtual CP_Vector GetSize() const { return {}; }
 
         CP_Vector GetLocation() const {return {coordX, coordY};};
 

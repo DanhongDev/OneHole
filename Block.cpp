@@ -12,5 +12,10 @@ void Block::draw()
 
     CP_Settings_Fill(isWall ? CP_Color_Create(80, 80, 80, 255) : CP_Color_Create(255, 255, 255, 255));
 
-    CP_Graphics_DrawRect(coordX, coordY, 10, 10);
+    CP_Graphics_DrawRect(coordX, coordY, width, height);
+}
+
+CP_Vector Block::GetSize() const
+{
+    return {width, height};
 }

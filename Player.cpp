@@ -17,3 +17,8 @@ void Player::draw()
     CP_Settings_Fill(CP_Color_Create(0, 255, 0, 255));
     CP_Graphics_DrawRect(coordX, coordY, width, height);
 }
+
+CP_Vector Player::GetSize() const
+{
+    return {width, height};
+}
