@@ -5,6 +5,8 @@
 #include "Balls.h"
 #include "Block.h"
 
+#include <cmath>
+
 namespace
 {
     bool IsBallCollidingWithObject(const Ball& ball, const GameObject &target)
@@ -33,6 +35,43 @@ namespace
 
         return dx*dx + dy*dy <= ball_radius * ball_radius;
     }
+
+    CP_Vector GetNorVec(const Ball &ball, const GameObject &target)
+    {
+        const CP_Vector target_loc = target.GetLocation();
+        const CP_Vector target_size = target.GetSize();
+        const CP_Vector ball_loc = ball.GetLocation();
+
+        if((target_loc.y - target_size.y/2.f <= ball_loc.y) && (ball_loc.y <= target_loc.y + target_size.y/2.f))
+        {
+            if(ball_loc.x <= target_loc.x - target_size.x/2.f) return {-1,0}; // left
+            else if(target_loc.x + target_size.x/2.f <= ball_loc.x) return {1,0}; // right
+        }
+        else if((target_loc.x - target_size.x/2.f <= ball_loc.x) && (ball_loc.x <= target_loc.x + target_size.x/2.f))
+        {
+            if(ball_loc.y <= target_loc.y - target_size.y/2.f) return {0,-1}; // top
+            else if(target_loc.y + target_size.y/2.f <= ball_loc.y) return {0,1}; // btm
+        }
+
+        return {0, 0};
+    }
+    bool ChangeDirection(const Ball &ball, const GameObject &target, CP_Vector &new_dir)
+    {
+        const CP_Vector v = CP_Vector_Normalize(ball.GetDirection());
+        const CP_Vector n = GetNorVec(ball, target);
+
+        // 면 법선을 구하지 못한 경우: 모서리 또는 중심이 사각형 안
+        if(n.x == 0.f && n.y == 0.f) return false;
+
+        const float dot = v.x * n.x + v.y * n.y;
+
+        // 공이 면을 향해 움직이는 경우에만 반사
+        if(dot >= 0.f) return false;
+
+        new_dir = {v.x - (2.f * dot * n.x), v.y - (2.f * dot * n.y)};
+
+        return true;
+    }
 }
 void CollisionManager::CollisionCheck()
 {
@@ -44,40 +83,57 @@ void CollisionManager::CollisionCheck()
         // 충돌이 있어난 GO들이 있다면 서로의 관계를 파악: Ball <-> Player, Ball <-> Block(Wall)  
         for(GameObject *target : manager.GetTargets())
         {
+            // 이미 죽은 GO면 건너뛰기
+            if(!target->GetAliveState()) continue;
+
             // Ball <-> Player: 공은 플레이어와 닿으면 튕겨진다.
             if(auto *player = dynamic_cast<Player*>(target))
             {
                 if(IsBallCollidingWithObject(*ball, *player))
                 {
-                    // ball->SetDirection({0.f, -1.f});
-                    // 튕기는 각도 계산 후 방향 설정
-                    CP_Vector cur_dir = ball->GetDirection();
-                    CP_Vector nor_dir = CP_Vector_Normalize(cur_dir);
-                    nor_dir.x *= std::cosf(CP_Math_Radians(90.f));
-                    nor_dir.y *= std::sinf(CP_Math_Radians(90.f));
-                    nor_dir.x *= ball->GetSpeed();
-                    nor_dir.y *= ball->GetSpeed();
-                    cur_dir = nor_dir;
-                    ball->SetDirection(cur_dir);
+                    // 방향 변경
+                    CP_Vector new_dir;
+                    if(ChangeDirection(*ball, *player, new_dir)) 
+                    {
+                        const CP_Vector normal = GetNorVec(*ball, *player);
+
+                        // 플레이어 윗면에 부딪혔을 때만 반영
+                        if(normal.y < 0.f)
+                        {
+                            const float offset = CP_Math_ClampFloat(
+                                (ball->GetLocation().x - player->GetLocation().x) / (player->GetSize().x / 2.f), -1.f, 1.f);
+
+                            const float dirX = CP_Math_ClampFloat(offset * 0.75f, -0.9f, 0.9f);
+
+                            new_dir = {dirX, -std::sqrt(1.f - dirX * dirX)};
+                        }
+                        
+                        ball->SetDirection(new_dir);
+                    }
                 }
             }
             // Ball <-> Block: 공은 블록을 부수고 튕겨진다. Ball <-> Wall: 공은 블록을 부수지는 못하고 튕겨진다.
             else if(auto *block = dynamic_cast<Block*>(target))
             {
-                if(block->GetisWall()) // true -> Wall
+                if(IsBallCollidingWithObject(*ball, *block))
                 {
-                    // 튕기는 각도 계산 후 방향 설정
-                }
-                else // false -> Block
-                {
-                    if(IsBallCollidingWithObject(*ball, *block))
+                    // 방향 변경
+                    CP_Vector new_dir;
+                    if(ChangeDirection(*ball, *block, new_dir)) 
                     {
-                        block->SetAliveState(false);
+                        ball->SetDirection(new_dir);
+
+                        if(!block->GetisWall()) block->SetAliveState(false);
                     }
-                    // 각도 맞춰서 튕기는 로직 구현하기
-                    
                 }
             }
+
+            // 공이 어쩔때 통과를 함 --> 공의 중심과 target사이의 거리가 <= radius로 계산하는데 계산하고 충돌 판정 나기 전에 조금 더 공이 나아가서 그런듯?
+                // 부딪히는 범위를 살짝만 증가해줄까??
+            
+            // 화면 외각에 부딪혔을때도 처리하기.
+                // 화면 외각에도 벽을 만들기 or 화면외각 값이용하여 처리하기
+                // 아래로 떨어졌을땐 공 죽는걸로 설정하기
         }
     }
 }

@@ -5,7 +5,7 @@ class Ball : public GameObject
 {
     private:
         CP_Vector direction;
-        static constexpr float speed = 150.f;
+        static constexpr float speed = 250.f;
         static constexpr float radius = 5.f;
 
     public:
